@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DailyWeather: Codable {
+struct DailyWeather: Codable {
     let lat,lon: Double
     let hourly: [Hourly]
     let daily: [Daily]
@@ -15,24 +15,24 @@ class DailyWeather: Codable {
 }
 
 
-class Daily: Codable {
+struct Daily: Codable {
     let dt: TimeInterval
     let weather: [WeatherIcon]
     let temp: Temp
 }
 
-class Hourly: Codable {
+struct Hourly: Codable {
     let dt: TimeInterval
     let weather: [WeatherIcon]
     let temp: Double
 }
 
-class WeatherIcon: Codable {
+struct WeatherIcon: Codable {
     let icon: String
 }
 
 
-class Temp: Codable {
+struct Temp: Codable {
     let min: Double
     let max: Double
 }

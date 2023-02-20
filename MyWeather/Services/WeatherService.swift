@@ -24,19 +24,32 @@ class WeatherService {
             completion(.failure(.serverError))
             return
         }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                completion(.failure(.serverError))
-                return
-            }
+        if let url = Bundle.main.url(forResource: "CurrentWeather", withExtension: "json") {
             do {
-                let weather = try JSONDecoder().decode(CurrentWeather.self, from: data)
-                completion(.success(weather))
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                let jsonData = try decoder.decode(CurrentWeather.self, from: data)
+                DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                    completion(.success(jsonData))
+                }
             } catch {
                 completion(.failure(.decodingError))
+                print("error:\(error)")
             }
-        }.resume()
+        }
+        
+        //        URLSession.shared.dataTask(with: url) { data, response, error in
+        //            guard let data = data, error == nil else {
+        //                completion(.failure(.serverError))
+        //                return
+        //            }
+        //            do {
+        //                let weather = try JSONDecoder().decode(CurrentWeather.self, from: data)
+        //                completion(.success(weather))
+        //            } catch {
+        //                completion(.failure(.decodingError))
+        //            }
+        //        }.resume()
     }
     
     func getDailyWeather(lat:Double,long:Double, completion: @escaping (Result<DailyWeather,NetworkError>) -> ()) {
@@ -45,18 +58,31 @@ class WeatherService {
             completion(.failure(.serverError))
             return
         }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                completion(.failure(.serverError))
-                return
-            }
+        if let url = Bundle.main.url(forResource: "DailyWeather", withExtension: "json") {
             do {
-                let weather = try JSONDecoder().decode(DailyWeather.self, from: data)
-                completion(.success(weather))
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                let jsonData = try decoder.decode(DailyWeather.self, from: data)
+                DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                    completion(.success(jsonData))
+                }
             } catch {
                 completion(.failure(.decodingError))
+                print("error:\(error)")
             }
-        }.resume()
+        }
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            guard let data = data, error == nil else {
+//                completion(.failure(.serverError))
+//                return
+//            }
+//            do {
+//                let weather = try JSONDecoder().decode(DailyWeather.self, from: data)
+//                completion(.success(weather))
+//            } catch {
+//                completion(.failure(.decodingError))
+//            }
+//        }.resume()
     }
     
     
