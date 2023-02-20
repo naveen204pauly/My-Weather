@@ -22,6 +22,7 @@ protocol WeatherViewModelDelegate: AnyObject {
 }
 class WeatherViewModel:NSObject {
     
+    //MARK: - vars/lets
     weak var delegate: WeatherViewModelDelegate?
     var currentWeather: CurrentWeather?
     var dailyWeather: DailyWeather?
@@ -37,9 +38,9 @@ class WeatherViewModel:NSObject {
     override init() {
         super.init()
         locationManager.delegate = self
-
     }
     
+    // MARK: - Flow Function
     private let dispatchGroup = DispatchGroup.init()
     func getWeatherData(location: CLLocation) {
         if !reachability.isNetworkAvailable() {
@@ -89,7 +90,7 @@ class WeatherViewModel:NSObject {
     }
 }
 
-// MARK: - Core location delegate.
+// MARK: - Core location delegate
 extension WeatherViewModel: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .notDetermined {
@@ -100,17 +101,9 @@ extension WeatherViewModel: CLLocationManagerDelegate {
                 return
             }
             self.location = currentLocation
-            print(currentLocation.coordinate.latitude)
-            print(currentLocation.coordinate.longitude)
         }
         if manager.authorizationStatus == .denied {
             self.delegate?.userDeniedLocationAccess()
-            print("User denied the location service")
         }
     }
 }
-
-
-
-
-

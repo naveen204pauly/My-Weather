@@ -8,6 +8,8 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    //MARK: - IBOutlets
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var hourlyForecastCollectionView: UICollectionView!
     @IBOutlet weak var dailyForecastTableView: UITableView!
@@ -19,14 +21,16 @@ class ViewController: UIViewController {
     @IBOutlet weak var currentMinTemperature: UILabel!
     
 
+    //MARK: - vars/lets
     let viewModel = WeatherViewModel.init()
     
+    //MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareForInitialLoad()
     }
     
-    
+    //MARK: - Flow functions
     private func prepareForInitialLoad() {
         viewModel.delegate = self
         self.backgroundImageView.addImageGradient()
@@ -43,7 +47,8 @@ class ViewController: UIViewController {
     
 }
 
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+// MARK: - CollectionView DataSource
+extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.viewModel.dailyWeather?.hourly.count ?? 0
     }
@@ -57,7 +62,8 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - TableView DataSource
+extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.viewModel.dailyWeather?.daily.count ?? 0
     }
@@ -70,13 +76,16 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// MARK: - ViewModel Delegates
 extension ViewController: WeatherViewModelDelegate {
     func userDeniedLocationAccess() {
         let alert = UIAlertController(title: "Access Denied", message: "Allow \"My Weather\" to access your location while your are using the app", preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "Go to settings", style: .default){ action in
-            if let BUNDLE_IDENTIFIER = Bundle.main.bundleIdentifier,
-               let url = URL(string: "\(UIApplication.openSettingsURLString)&path=LOCATION/\(BUNDLE_IDENTIFIER)") {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
             }
             alert.dismiss(animated: true)
         })
@@ -97,7 +106,6 @@ extension ViewController: WeatherViewModelDelegate {
         self.dailyForecastTableView.reloadData()
         self.dailyForecastTableView.layoutIfNeeded()
         tableViewHeight.constant = dailyForecastTableView.contentSize.height
-        
     }
     
     func didWeatherViewModelFail(type: WeatherViewModelErrorType, error: Error) {
@@ -111,7 +119,6 @@ extension ViewController: WeatherViewModelDelegate {
             })
             self.present(alert, animated: true)
         }
-        
     }
     func handleLoadingIndicator(show: Bool) {
         if show {
@@ -120,6 +127,4 @@ extension ViewController: WeatherViewModelDelegate {
             self.view.removeBluerLoader()
         }
     }
-    
-    
 }
