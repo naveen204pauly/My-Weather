@@ -19,7 +19,7 @@ class WeatherService {
         
     }
     
-    //Since Open Weather restrict the number of free API calls, uncomment the below code for getting data from local json file for debugging purposes.
+    //Since Open Weather restrict the number of free API calls, uncomment the below code for getting data from local json file for debugging purposes and comment the URLSession.
     func getCurrentWeather(lat:Double,long:Double,completion: @escaping (Result<CurrentWeather,NetworkError>) -> Void) {
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(long)&units=metric&appid=\(key)") else {
             completion(.failure(.serverError))
