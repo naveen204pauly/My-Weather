@@ -19,38 +19,38 @@ class WeatherService {
         
     }
     
-    //Since Open Weather restrict the number of free API calls, uncomment the below code of getting data from local json file for debugging.
+    //Since Open Weather restrict the number of free API calls, uncomment the below code for getting data from local json file for debugging purposes.
     func getCurrentWeather(lat:Double,long:Double,completion: @escaping (Result<CurrentWeather,NetworkError>) -> Void) {
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(long)&units=metric&appid=\(key)") else {
             completion(.failure(.serverError))
             return
         }
         
-        @DecodableJsonFile(name: "CurrentWeather")
-        var jsonData: CurrentWeather?
-        if let data = jsonData {
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
-                completion(.success(data))
-            }
-        } else {
-            completion(.failure(.decodingError))
-        }
-        //        URLSession.shared.dataTask(with: url) { data, response, error in
-        //            guard let data = data, error == nil else {
-        //                completion(.failure(.serverError))
-        //                return
-        //            }
-        //            do {
-        //                let weather = try JSONDecoder().decode(CurrentWeather.self, from: data)
-        //                DispatchQueue.main.async {
-        //                    completion(.success(weather))
-        //                }
-        //            } catch {
-        //                DispatchQueue.main.async {
-        //                    completion(.failure(.decodingError))
-        //                }
-        //            }
-        //        }.resume()
+//        @DecodableJsonFile(name: "CurrentWeather")
+//        var jsonData: CurrentWeather?
+//        if let data = jsonData {
+//            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+//                completion(.success(data))
+//            }
+//        } else {
+//            completion(.failure(.decodingError))
+//        }
+                URLSession.shared.dataTask(with: url) { data, response, error in
+                    guard let data = data, error == nil else {
+                        completion(.failure(.serverError))
+                        return
+                    }
+                    do {
+                        let weather = try JSONDecoder().decode(CurrentWeather.self, from: data)
+                        DispatchQueue.main.async {
+                            completion(.success(weather))
+                        }
+                    } catch {
+                        DispatchQueue.main.async {
+                            completion(.failure(.decodingError))
+                        }
+                    }
+                }.resume()
     }
     
     func getDailyWeather(lat:Double,long:Double, completion: @escaping (Result<DailyWeather,NetworkError>) -> ()) {
@@ -60,32 +60,32 @@ class WeatherService {
             return
         }
         
-        @DecodableJsonFile(name: "DailyWeather")
-        var jsonData: DailyWeather?
-        if let data = jsonData {
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
-                completion(.success(data))
-            }
-        } else {
-            completion(.failure(.decodingError))
-        }
-        //        URLSession.shared.dataTask(with: url) { data, response, error in
-        //            guard let data = data, error == nil else {
-        //                completion(.failure(.serverError))
-        //                return
-        //            }
-        //            do {
-        //                let weather = try JSONDecoder().decode(DailyWeather.self, from: data)
-        //                DispatchQueue.main.async {
-        //                    completion(.success(weather))
-        //                }
-        //            } catch {
-        //                DispatchQueue.main.async {
-        //                    completion(.failure(.decodingError))
-        //                }
-        //
-        //            }
-        //        }.resume()
+//        @DecodableJsonFile(name: "DailyWeather")
+//        var jsonData: DailyWeather?
+//        if let data = jsonData {
+//            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+//                completion(.success(data))
+//            }
+//        } else {
+//            completion(.failure(.decodingError))
+//        }
+                URLSession.shared.dataTask(with: url) { data, response, error in
+                    guard let data = data, error == nil else {
+                        completion(.failure(.serverError))
+                        return
+                    }
+                    do {
+                        let weather = try JSONDecoder().decode(DailyWeather.self, from: data)
+                        DispatchQueue.main.async {
+                            completion(.success(weather))
+                        }
+                    } catch {
+                        DispatchQueue.main.async {
+                            completion(.failure(.decodingError))
+                        }
+        
+                    }
+                }.resume()
     }
     
     
